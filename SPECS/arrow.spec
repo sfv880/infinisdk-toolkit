@@ -1,7 +1,7 @@
 %global srcname arrow
 
 Name:          python3-%{srcname}
-Version:       1.2.3
+Version:       0.15.8
 Release:       1%{?dist}
 Summary:       Better dates & times for Python
 License:       ASL 2.0
@@ -12,7 +12,7 @@ BuildArch:     noarch
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-six
-Requires:      python3-dateutil >= 2.7.0
+Requires:      python3-dateutil
 Requires:      python3-six
 
 %description
@@ -25,8 +25,6 @@ API that supports many common creation scenarios.
 %prep
 %autosetup -n %{srcname}-%{version}
 rm -rf %{srcname}.egg-info
-echo '# Marker file for PEP 561. The mypy package uses inline types.' | \
-    tee arrow/py.typed
 
 %build
 %py3_build
@@ -41,5 +39,5 @@ echo '# Marker file for PEP 561. The mypy package uses inline types.' | \
 %{python3_sitelib}/%{srcname}-%{version}-py%{python3_version}.egg-info
 
 %changelog
-* Mon Apr 04 2022 Alexander Deiter <adeiter@infinidat.com> - 1.2.3-1
+* Mon Apr 04 2022 Alexander Deiter <adeiter@infinidat.com> - 0.15.8-1
 - Initial RPM release
