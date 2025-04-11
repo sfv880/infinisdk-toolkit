@@ -7,8 +7,9 @@ RHOSPVERSION    ?= 16
 REPO            ?= $(RPMDIR)/repodata/repomd.xml
 COMMON_TARGETS  ?= $(TOPDIR)/TARGETS
 PYTHON_MODULES  ?= api-object-schema capacity confetti flux gossip \
-                   infi-dtypes-iqn infi-dtypes-wwn infinisdk logbook \
-                   mitba pact storage-interfaces urlobject vintage waiting
+                   infi-dtypes-iqn infi-dtypes-nqn infi-dtypes-wwn \
+                   infinisdk logbook mitba pact storage-interfaces \
+                   click munch urlobject vintage waiting
 EPEL_PACKAGE    ?= https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(OSVERSION).noarch.rpm
 DEV_PACKAGES    ?= createrepo epel-rpm-macros rpm-build rpmdevtools rpmlint yum-utils
 DEV_TARGET      ?= $(addprefix $(COMMON_TARGETS)/, dev)

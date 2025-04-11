@@ -1,7 +1,7 @@
 %global srcname click
 
 Name:          python3-%{srcname}
-Version:       8.0.4
+Version:       8.1.7
 Release:       1%{?dist}
 Summary:       Composable command line interface toolkit
 License:       BSD
@@ -21,8 +21,6 @@ configurable but comes with sensible defaults out of the box.
 %prep
 %autosetup -n %{srcname}-%{version}
 rm -rf %{srcname}.egg-info
-echo '# Marker file for PEP 561. The mypy package uses inline types.' | \
-    tee src/click/py.typed
 
 %build
 %py3_build
@@ -37,5 +35,7 @@ echo '# Marker file for PEP 561. The mypy package uses inline types.' | \
 %{python3_sitelib}/%{srcname}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Fri Apr 11 2025 Alexander Deiter <adeiter@infinidat.com> - 8.1.7-1
+- Bump version 8.0.4 => 8.1.7
 * Mon Apr 04 2022 Alexander Deiter <adeiter@infinidat.com> - 8.0.4-1
 - Initial RPM release

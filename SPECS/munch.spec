@@ -9,6 +9,8 @@ URL:           https://github.com/Infinidat/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
+BuildRequires: python3-pbr
+BuildRequires: python3-pip
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 

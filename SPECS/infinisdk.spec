@@ -1,7 +1,7 @@
 %global srcname infinisdk
 
 Name:          python3-%{srcname}
-Version:       206.1.2
+Version:       258.0.2
 Release:       1%{?dist}
 Summary:       Infinidat API SDK
 License:       BSD
@@ -15,13 +15,14 @@ BuildRequires: python3-setuptools
 Requires:      python3-api-object-schema >= 1.5.1
 Requires:      python3-arrow >= 0.6.0
 Requires:      python3-capacity >= 1.3.8
-Requires:      python3-click
+Requires:      python3-click >= 8.0.4
 Requires:      python3-colorama
 Requires:      python3-confetti >= 2.1.0
 Requires:      python3-dateutil
 Requires:      python3-flux
 Requires:      python3-gossip >= 2.3.1
 Requires:      python3-infi-dtypes-iqn >= 0.3.0
+Requires:      python3-infi-dtypes-nqn >= 0.1.0
 Requires:      python3-infi-dtypes-wwn >= 0.0.2
 Requires:      python3-logbook >= 0.11.0
 Requires:      python3-mitba
@@ -56,5 +57,7 @@ rm -f %{buildroot}/%{_bindir}/%{srcname}-cli
 %{python3_sitelib}/%{srcname}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Fri Apr 11 2025 Alexander Deiter <adeiter@infinidat.com> - 258.0.2-1
+- Bump version 206.1.2 => 258.0.2
 * Mon Apr 04 2022 Alexander Deiter <adeiter@infinidat.com> - 185.1.1-1
 - Initial RPM release
