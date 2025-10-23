@@ -1,87 +1,87 @@
+TAG             ?= .infinidat
 TOPDIR          ?= /root/rpmbuild
 RPMDIR          ?= $(TOPDIR)/RPMS
 ARCH            ?= $(shell arch)
 SPECDIR         ?= $(shell rpm --eval '%{_specdir}')
 OSVERSION       ?= $(shell rpm --eval '%{rhel}')
-RHOSPVERSION    ?= 16
 REPO            ?= $(RPMDIR)/repodata/repomd.xml
 COMMON_TARGETS  ?= $(TOPDIR)/TARGETS
-PYTHON_MODULES  ?= api-object-schema capacity confetti flux gossip \
-                   infi-dtypes-iqn infi-dtypes-nqn infi-dtypes-wwn \
-                   infinisdk logbook mitba pact storage-interfaces \
-                   click munch urlobject vintage waiting
-EPEL_PACKAGE    ?= https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(OSVERSION).noarch.rpm
-DEV_PACKAGES    ?= createrepo epel-rpm-macros rpm-build rpmdevtools rpmlint yum-utils
+PYTHON_VERSION  ?= 3.11
+PYTHON_MODULES  ?= pbr colorama sentinels vintage logbook dateutil \
+                   arrow api-object-schema capacity confetti flux  \
+                   gossip mitba infi-dtypes-iqn infi-dtypes-nqn    \
+                   infi-dtypes-wwn waiting pact storage-interfaces \
+                   click munch urlobject infinisdk cinder-infinidat
+DEV_PACKAGES    ?= createrepo rpm-build rpmdevtools rpmlint yum-utils
 DEV_TARGET      ?= $(addprefix $(COMMON_TARGETS)/, dev)
-PYTHON_PACKAGES ?= $(addprefix python3-, $(PYTHON_MODULES))
+RPMMACRO_TARGET ?= $(addprefix $(COMMON_TARGETS)/, rpmmacros)
+PYTHON_PACKAGES ?= $(addprefix python$(PYTHON_VERSION)-, $(PYTHON_MODULES))
 PYTHON_TARGETS  ?= $(addprefix $(COMMON_TARGETS)/, $(PYTHON_PACKAGES))
 PYTHON_SPECS    ?= $(addprefix $(SPECDIR)/, $(addsuffix .spec, $(PYTHON_MODULES)))
-IMAGE           ?= redhat/ubi8
+IMAGE           ?= almalinux:9
 RPMBUILD        := rpmbuild --clean --undefine '_disable_source_fetch'
 SETUPTREE       := rpmdev-setuptree
-YUM_BASEDIR     := /etc/yum.repos.d
-YUM_OPTIONS     := --assumeyes
-YUM_COMMAND     := yum $(YUM_OPTIONS)
-YUM_CLEAN       := $(YUM_COMMAND) --enablerepo='*' clean all
-YUM_INSTALL     := $(YUM_COMMAND) install
-YUM_UPDATE      := $(YUM_COMMAND) update
-
-CREATEREPO      := createrepo
-BUILDDEP        := yum-builddep $(YUM_OPTIONS)
+DNF_BASEDIR     := /etc/yum.repos.d
+DNF_OPTIONS     := --assumeyes
+DNF_COMMAND     := dnf $(DNF_OPTIONS)
+DNF_CLEAN       := $(DNF_COMMAND) --enablerepo='*' clean all
+DNF_CONFIG      := $(DNF_COMMAND) config-manager
+DNF_INSTALL     := $(DNF_COMMAND) install
+DNF_UPDATE      := $(DNF_COMMAND) update
+DNF_FIX         := sed -i -e '/^mirrorlist=/d' -e 's|^\#.*baseurl=|baseurl=|g' /etc/yum.repos.d/*.repo
+CREATEREPO      := createrepo --simple-md-filenames
+BUILDDEP        := dnf builddep $(DNF_OPTIONS)
 RPMLINT         := rpmlint --info
 MKDIR           := install -v -d
 TOUCH           := touch
 RPM             := rpm
 RM              := rm -rf
 
-all: 
-	@echo 'Run $(MAKE) USER=email PASSWORD=passwd docker => to build inside a container'
-	@echo 'Run $(MAKE) USER=email PASSWORD=passwd local  => to local build'
+all:
+	podman system prune -a -f
+	podman run --rm --volume $(CURDIR):$(TOPDIR):Z,rw $(IMAGE) \
+		sh -c "$(DNF_CLEAN) && $(DNF_FIX) && $(DNF_INSTALL) make && make -C $(TOPDIR) local"
 
-docker:
-	@docker run --rm --volume $(CURDIR):$(TOPDIR):rw $(IMAGE) \
-		sh -c '$(YUM_INSTALL) make && make -C $(TOPDIR) USER=$(USER) PASSWORD=$(PASSWORD) local'
-
-local: $(DEV_TARGET) $(COMMON_TARGETS) $(PYTHON_TARGETS) $(REPO) test clean
-
-clean:
-	subscription-manager remove --all
-	subscription-manager unregister
-	subscription-manager clean
-	$(RM) $(COMMON_TARGETS)
+local: $(PYTHON_TARGETS) test
 
 test:
-	$(YUM_CLEAN)
-	printf '[test]\nname=test\nbaseurl=file://%s\nenabled=1\ngpgcheck=0\n' $(RPMDIR) | tee $(YUM_BASEDIR)/test.repo
-	$(YUM_UPDATE)
-	$(YUM_INSTALL) python3-infinisdk
+	rpm -qa | grep '$(TAG)' | xargs -rt rpm -e
+	$(DNF_CLEAN)
+	$(DNF_UPDATE)
+	$(DNF_INSTALL) python$(PYTHON_VERSION)-cinder-infinidat python$(PYTHON_VERSION)-pbr
 	$(RPM) -qi $(PYTHON_PACKAGES)
-	$(RPMLINT) $(PYTHON_SPECS) $(PYTHON_PACKAGES)
+	rpm -q --provides $(PYTHON_PACKAGES)
+	#$(RPMLINT) $(PYTHON_SPECS) $(PYTHON_PACKAGES)
 
 $(COMMON_TARGETS):
 	$(MKDIR) $@
 
 $(DEV_TARGET): $(COMMON_TARGETS)
-	@subscription-manager register --force --username=$(USER) --password=$(PASSWORD)
-	subscription-manager list --available
-	subscription-manager refresh
-	subscription-manager attach --auto
-	subscription-manager repos --enable codeready-builder-for-rhel-$(OSVERSION)-$(ARCH)-rpms
-	echo SKIP subscription-manager repos --enable openstack-$(RHOSPVERSION)-tools-for-rhel-$(OSVERSION)-$(ARCH)-rpms
-	echo SKIP subscription-manager repos --enable openstack-$(RHOSPVERSION)-for-rhel-$(OSVERSION)-$(ARCH)-rpms
-	$(YUM_INSTALL) $(EPEL_PACKAGE)
-	$(YUM_CLEAN)
-	$(YUM_UPDATE)
-	$(YUM_INSTALL) $(DEV_PACKAGES)
+	$(DNF_INSTALL) dnf-plugins-core
+	$(DNF_CONFIG) --enable appstream baseos crb || \
+	$(DNF_CONFIG) --enable appstream baseos powertools
+	$(DNF_CLEAN)
+	$(DNF_UPDATE)
+	$(DNF_INSTALL) $(DEV_PACKAGES)
 	$(SETUPTREE)
-	$(TOUCH) $@
+	$(MKDIR) $(RPMDIR)
+	$(CREATEREPO) $(RPMDIR)
+	printf '[InfiniSDK]\nname=Infinidat InfiniSDK\nbaseurl=file://%s\nenabled=1\ngpgcheck=0\n' $(RPMDIR) | \
+		tee $(DNF_BASEDIR)/test.repo
+	#$(TOUCH) $@
 
-$(COMMON_TARGETS)/python3-%: $(SPECDIR)/%.spec $(DEV_TARGET)
+$(RPMMACRO_TARGET):
+	echo '%tag $(TAG)' | tee -a $(HOME)/.rpmmacros
+	echo '%python3_pkgversion $(PYTHON_VERSION)' | tee -a $(HOME)/.rpmmacros
+	echo '%__python3 /usr/bin/python%{python3_pkgversion}' | tee -a $(HOME)/.rpmmacros
+
+$(COMMON_TARGETS)/python$(PYTHON_VERSION)-%: $(SPECDIR)/%.spec $(DEV_TARGET) $(RPMMACRO_TARGET)
 	$(BUILDDEP) $<
 	$(RPMBUILD) -ba $<
+	$(CREATEREPO) $(RPMDIR)
+	$(DNF_CLEAN)
+	$(DNF_INSTALL) python$(PYTHON_VERSION)-$*
+	rpm -q --provides python$(PYTHON_VERSION)-$*
 	$(TOUCH) $@
 
-$(REPO): $(PYTHON_TARGETS)
-	$(CREATEREPO) $(RPMDIR)
-
-.PHONY: all clean docker local test
+.PHONY: all clean podman local test

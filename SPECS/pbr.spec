@@ -1,30 +1,30 @@
 %global tag .infinidat
 %global python3_pkgversion 3.11
 %global __python3 /usr/bin/python%{python3_pkgversion}
-%global srcname mitba
+%global srcname pbr
 
 Name:          python%{python3_pkgversion}-%{srcname}
-Version:       1.1.1
+Version:       7.0.1
 Release:       1%{?tag}%{?dist}
-Summary:       Python library for caching results from functions and methods
+Summary:       Python Build Reasonableness
 Group:         Applications/System
-License:       BSD
+License:       ASL 2.0
 Vendor:        Infinidat
-URL:           https://github.com/Infinidat/%{srcname}
+URL:           https://pypi.org/project/pbr
 Source:        %{pypi_source}
 
 BuildArch:     noarch
 BuildRequires: python%{python3_pkgversion}-devel
 BuildRequires: python%{python3_pkgversion}-rpm-macros
-BuildRequires: python%{python3_pkgversion}dist(pbr)
 BuildRequires: python%{python3_pkgversion}dist(pip)
 BuildRequires: python%{python3_pkgversion}dist(setuptools)
-Requires:      python%{python3_pkgversion}dist(flux)
-Requires:      python%{python3_pkgversion}dist(logbook) >= 0.12.2
 
 %description
-Mitba is a small library for implementing method
-or function-level caching for results.
+PBR is a library that injects some useful and sensible default behaviors into
+your setuptools run. It started off life as the chunks of code that were copied
+between all of the OpenStack projects. Around the time that OpenStack hit 18
+different projects each with at least 3 active branches, it seems like a good
+time to make that code into a proper re-usable library.
 
 %prep
 %autosetup -n %{srcname}-%{version}
@@ -38,10 +38,11 @@ rm -rf %{srcname}.egg-info
 
 %files
 %license LICENSE
-%doc README.md
+%doc README.rst
+%{_bindir}/pbr
 %{python3_sitelib}/%{srcname}
 %{python3_sitelib}/%{srcname}-%{version}-py%{python3_version}.egg-info
 
 %changelog
-* Mon Apr 04 2022 Alexander Deiter <adeiter@infinidat.com> - 1.1.1-1
+* Tue Oct 21 2025 Alexander Deiter <adeiter@infinidat.com> - 7.0.1-1
 - Initial RPM release

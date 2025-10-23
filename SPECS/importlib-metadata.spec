@@ -1,17 +1,24 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname importlib_metadata
 %global pkgname importlib-metadata
 
-Name:          python3-%{pkgname}
+Name:          python%{python3_pkgversion}-%{pkgname}
 Version:       4.8.3
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Read metadata from Python packages
+Group:         Applications/System
 License:       ASL
+Vendor:        Infinidat
 URL:           https://github.com/python/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
 
 %description
 Library to access the metadata for a Python package.

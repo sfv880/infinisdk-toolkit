@@ -1,19 +1,26 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname arrow
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       0.15.8
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Better dates & times for Python
+Group:         Applications/System
 License:       ASL 2.0
+Vendor:        Infinidat
 URL:           https://github.com/arrow-py/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
-BuildRequires: python3-six
-Requires:      python3-dateutil
-Requires:      python3-six
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
+BuildRequires: python%{python3_pkgversion}dist(six)
+Requires:      python%{python3_pkgversion}dist(python-dateutil)
+Requires:      python%{python3_pkgversion}dist(six)
 
 %description
 Arrow is a Python library that offers a sensible and human-friendly

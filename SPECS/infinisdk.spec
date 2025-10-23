@@ -1,38 +1,45 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname infinisdk
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       258.0.2
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Infinidat API SDK
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/Infinidat/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-pbr
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
-Requires:      python3-api-object-schema >= 1.5.1
-Requires:      python3-arrow >= 0.6.0
-Requires:      python3-capacity >= 1.3.8
-Requires:      python3-click >= 8.0.4
-Requires:      python3-colorama
-Requires:      python3-confetti >= 2.1.0
-Requires:      python3-dateutil
-Requires:      python3-flux
-Requires:      python3-gossip >= 2.3.1
-Requires:      python3-infi-dtypes-iqn >= 0.3.0
-Requires:      python3-infi-dtypes-nqn >= 0.1.0
-Requires:      python3-infi-dtypes-wwn >= 0.0.2
-Requires:      python3-logbook >= 0.11.0
-Requires:      python3-mitba
-Requires:      python3-munch
-Requires:      python3-pact >= 1.0.0
-Requires:      python3-requests >= 2.4.0
-Requires:      python3-sentinels
-Requires:      python3-storage-interfaces
-Requires:      python3-urlobject
-Requires:      python3-vintage >= 0.4.0
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pbr)
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
+Requires:      python%{python3_pkgversion}dist(api-object-schema) >= 1.5.1
+Requires:      python%{python3_pkgversion}dist(arrow) >= 0.6.0
+Requires:      python%{python3_pkgversion}dist(capacity) >= 1.3.8
+Requires:      python%{python3_pkgversion}dist(click) >= 8.0.4
+Requires:      python%{python3_pkgversion}dist(colorama)
+Requires:      python%{python3_pkgversion}dist(confetti) >= 2.1.0
+Requires:      python%{python3_pkgversion}dist(flux)
+Requires:      python%{python3_pkgversion}dist(gossip) >= 2.3.1
+Requires:      python%{python3_pkgversion}dist(infi.dtypes.iqn) >= 0.4
+Requires:      python%{python3_pkgversion}dist(infi.dtypes.nqn) >= 0.1
+Requires:      python%{python3_pkgversion}dist(infi.dtypes.wwn) >= 0.1
+Requires:      python%{python3_pkgversion}dist(logbook) >= 0.11.0
+Requires:      python%{python3_pkgversion}dist(mitba)
+Requires:      python%{python3_pkgversion}dist(munch)
+Requires:      python%{python3_pkgversion}dist(pact) >= 1.0.0
+Requires:      python%{python3_pkgversion}dist(python-dateutil)
+Requires:      python%{python3_pkgversion}dist(requests) >= 2.4.0
+Requires:      python%{python3_pkgversion}dist(sentinels)
+Requires:      python%{python3_pkgversion}dist(storage-interfaces)
+Requires:      python%{python3_pkgversion}dist(urlobject)
+Requires:      python%{python3_pkgversion}dist(vintage) >= 0.4.0
 
 %description
 InfiniSDK is the official Python SDK for INFINIDAT's products.

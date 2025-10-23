@@ -1,20 +1,27 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname click
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       8.1.7
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Composable command line interface toolkit
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/pallets/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
 
 %description
 Click is a Python package for creating beautiful command line
-interfacesin a composable way with as little code as necessary.
+interfaces in a composable way with as little code as necessary.
 It's the "Command Line Interface Creation Kit". It's highly
 configurable but comes with sensible defaults out of the box.
 

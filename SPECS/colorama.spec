@@ -1,16 +1,23 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname colorama
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       0.4.5
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Cross-platform colored terminal text
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/tartley/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
 
 %description
 Colorama makes ANSI escape character sequences for producing

@@ -1,18 +1,25 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname Logbook
 %global pkgname logbook
 
-Name:          python3-%{pkgname}
+Name:          python%{python3_pkgversion}-%{pkgname}
 Version:       1.5.3
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       A logging replacement for Python
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/getlogbook/%{pkgname}
 Source:        %{pypi_source}
 
 BuildRequires: gcc
-BuildRequires: python3-Cython
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(cython)
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
 
 %description
 Logbook is a logging system for Python that replaces the standard library's
@@ -24,7 +31,7 @@ and mind and the idea to make logging fun.
 rm -rf %{srcname}.egg-info
 
 %build
-cython %{pkgname}/_speedups.pyx
+cython-%{python3_pkgversion} %{pkgname}/_speedups.pyx
 %py3_build
 
 %install

@@ -1,19 +1,26 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname api_object_schema
 %global pkgname api-object-schema
 
-Name:          python3-%{pkgname}
+Name:          python%{python3_pkgversion}-%{pkgname}
 Version:       2.0.0
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       API Object Schema
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/Infinidat/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
 BuildRequires: curl
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
-Requires:      python3-sentinels
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
+Requires:      python%{python3_pkgversion}dist(sentinels)
 
 %description
 API Object Schema is a library of utilities for defining

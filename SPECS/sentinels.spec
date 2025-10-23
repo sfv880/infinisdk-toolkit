@@ -1,16 +1,23 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname sentinels
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       1.0.0
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Various objects to denote special meanings in python
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/vmalloc/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
 
 %description
 The sentinels module is a small utility providing the Sentinel class,

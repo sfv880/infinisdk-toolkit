@@ -1,20 +1,27 @@
+%global tag .infinidat
+%global python3_pkgversion 3.11
+%global __python3 /usr/bin/python%{python3_pkgversion}
 %global srcname pact
 
-Name:          python3-%{srcname}
+Name:          python%{python3_pkgversion}-%{srcname}
 Version:       1.12.0
-Release:       1%{?dist}
+Release:       1%{?tag}%{?dist}
 Summary:       Promises library in Python
+Group:         Applications/System
 License:       BSD
+Vendor:        Infinidat
 URL:           https://github.com/getslash/%{srcname}
 Source:        %{pypi_source}
 
 BuildArch:     noarch
-BuildRequires: python3-pbr
-BuildRequires: python3-devel
-BuildRequires: python3-setuptools
-Requires:      python3-flux
-Requires:      python3-logbook >= 0.12.2
-Requires:      python3-waiting
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-rpm-macros
+BuildRequires: python%{python3_pkgversion}dist(pbr)
+BuildRequires: python%{python3_pkgversion}dist(pip)
+BuildRequires: python%{python3_pkgversion}dist(setuptools)
+Requires:      python%{python3_pkgversion}dist(flux)
+Requires:      python%{python3_pkgversion}dist(logbook) >= 0.12.2
+Requires:      python%{python3_pkgversion}dist(waiting)
 
 %description
 Pact is a library implementing a general concept of promises/deferreds.
